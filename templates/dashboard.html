@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - KubeCertify{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">Dashboard</h2>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-diagram-3"></i> Clusters
+                </h5>
+                <p class="card-text display-4">{{ current_user.kubeconfigs|length }}</p>
+                <a href="{{ url_for('kubeconfig') }}" class="btn btn-outline-primary">Manage Clusters</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-shield-lock"></i> TLS Certificates
+                </h5>
+                <p class="card-text display-4">0</p>
+                <a href="{{ url_for('secrets') }}" class="btn btn-outline-primary">View Certificates</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-exclamation-triangle"></i> Expiring Soon
+                </h5>
+                <p class="card-text display-4 text-warning">0</p>
+                <a href="{{ url_for('secrets') }}" class="btn btn-outline-warning">View Details</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-bell"></i> Active Alerts
+                </h5>
+                <p class="card-text display-4">{{ current_user.alerts|length }}</p>
+                <a href="{{ url_for('alerts') }}" class="btn btn-outline-primary">Manage Alerts</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Certificate Expiration Timeline</h5>
+                <div class="chart-container">
+                    <canvas id="expirationChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Certificate Status</h5>
+                <div class="chart-container">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Recent Activity</h5>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover">
+                        <thead>
+                            <tr>
+                                <th>Cluster</th>
+                                <th>Certificate</th>
+                                <th>Expiration</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="5" class="text-center">No recent activity</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Certificate Expiration Timeline Chart
+const expirationCtx = document.getElementById('expirationChart').getContext('2d');
+new Chart(expirationCtx, {
+    type: 'line',
+    data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+            label: 'Expiring Certificates',
+            data: [0, 0, 0, 0, 0, 0],
+            borderColor: '#0d6efd',
+            tension: 0.4,
+            fill: true,
+            backgroundColor: 'rgba(13, 110, 253, 0.1)'
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                labels: {
+                    color: '#ffffff'
+                }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: {
+                    color: '#404040'
+                },
+                ticks: {
+                    color: '#ffffff'
+                }
+            },
+            x: {
+                grid: {
+                    color: '#404040'
+                },
+                ticks: {
+                    color: '#ffffff'
+                }
+            }
+        }
+    }
+});
+
+// Certificate Status Chart
+const statusCtx = document.getElementById('statusChart').getContext('2d');
+new Chart(statusCtx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Valid', 'Expiring Soon', 'Expired'],
+        datasets: [{
+            data: [0, 0, 0],
+            backgroundColor: [
+                '#198754',
+                '#ffc107',
+                '#dc3545'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                labels: {
+                    color: '#ffffff'
+                }
+            }
+        }
+    }
+});
+</script>
+{% endblock %} 

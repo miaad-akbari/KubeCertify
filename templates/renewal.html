@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Certificate Renewal - KubeCertify{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">Certificate Renewal</h2>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Install Cert-Manager</h5>
+                <p class="card-text">To enable automatic certificate renewal, you need to install cert-manager in your cluster.</p>
+                <div class="mb-3">
+                    <h6>Using Helm:</h6>
+                    <pre class="bg-dark text-light p-3 rounded"><code># Add the Jetstack Helm repository
+helm repo add jetstack https://charts.jetstack.io
+helm repo update
+
+# Install cert-manager
+helm install cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --create-namespace \
+  --version v1.13.3 \
+  --set installCRDs=true</code></pre>
+                </div>
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> After installation, you'll need to configure a ClusterIssuer for Let's Encrypt.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Configure Domain</h5>
+                <form id="domain-form">
+                    <div class="mb-3">
+                        <label for="domain" class="form-label">Domain Name</label>
+                        <input type="text" class="form-control" id="domain" name="domain" 
+                               placeholder="example.com" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Certificate Type</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="certType" 
+                                   id="singleDomain" value="single" checked>
+                            <label class="form-check-label" for="singleDomain">
+                                Single Domain
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="certType" 
+                                   id="wildcard" value="wildcard">
+                            <label class="form-check-label" for="wildcard">
+                                Wildcard (*.example.com)
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Generate Certificate</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Certificate Status</h5>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover">
+                        <thead>
+                            <tr>
+                                <th>Domain</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Last Renewed</th>
+                                <th>Next Renewal</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="6" class="text-center">No certificates configured</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('domain-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const domain = document.getElementById('domain').value;
+    const certType = document.querySelector('input[name="certType"]:checked').value;
+    
+    // Here we would make an API call to create the certificate
+    // For now, we'll just show a success message
+    alert(`Certificate request submitted for ${certType === 'wildcard' ? '*.' : ''}${domain}`);
+});
+</script>
+{% endblock %} 

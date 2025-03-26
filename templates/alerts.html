@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Alerts - KubeCertify{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">Certificate Expiration Alerts</h2>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Configure Alert Settings</h5>
+                <form method="POST" id="alert-form">
+                    <div class="mb-3">
+                        <label class="form-label">Alert Time</label>
+                        <div class="row g-2">
+                            <div class="col-md-4">
+                                <input type="number" class="form-control" id="days" name="days" 
+                                       min="0" value="7" required>
+                                <div class="form-text">Days</div>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="number" class="form-control" id="hours" name="hours" 
+                                       min="0" max="23" value="0">
+                                <div class="form-text">Hours</div>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="number" class="form-control" id="minutes" name="minutes" 
+                                       min="0" max="59" value="0">
+                                <div class="form-text">Minutes</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Notification Email</label>
+                        <input type="email" class="form-control" value="{{ current_user.email }}" readonly>
+                        <div class="form-text">Alerts will be sent to your registered email address.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Calendar Integration</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="calendar" name="calendar" checked>
+                            <label class="form-check-label" for="calendar">
+                                Add to Google Calendar
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Alert Settings</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Active Alerts</h5>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover">
+                        <thead>
+                            <tr>
+                                <th>Certificate</th>
+                                <th>Cluster</th>
+                                <th>Alert Time</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for alert in current_user.alerts %}
+                            <tr>
+                                <td>example.com</td>
+                                <td>production-cluster</td>
+                                <td>
+                                    {{ alert.days_before }} days
+                                    {% if alert.hours %}{{ alert.hours }} hours{% endif %}
+                                    {% if alert.minutes %}{{ alert.minutes }} minutes{% endif %}
+                                </td>
+                                <td>
+                                    {% if alert.is_active %}
+                                    <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">Inactive</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-danger">Remove</button>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center">No active alerts</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('alert-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const days = parseInt(document.getElementById('days').value) || 0;
+    const hours = parseInt(document.getElementById('hours').value) || 0;
+    const minutes = parseInt(document.getElementById('minutes').value) || 0;
+    const calendar = document.getElementById('calendar').checked;
+    
+    // Calculate total minutes for the alert
+    const totalMinutes = (days * 24 * 60) + (hours * 60) + minutes;
+    
+    // Here you would send this data to your backend
+    console.log('Alert settings:', {
+        totalMinutes,
+        calendar
+    });
+    
+    // If calendar integration is enabled, you would handle that here
+    if (calendar) {
+        // Implement calendar integration
+        console.log('Adding to calendar...');
+    }
+});
+</script>
+{% endblock %} 

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome - KubeCertify{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center text-center">
+    <div class="col-md-8">
+        <h1 class="display-4 mb-4">Welcome to KubeCertify</h1>
+        <p class="lead mb-4">A modern web application for managing Kubernetes TLS certificates, monitoring expiration dates, and handling certificate renewals.</p>
+        
+        {% if current_user.is_authenticated %}
+        <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg px-4 gap-3">Go to Dashboard</a>
+            <a href="{{ url_for('logout') }}" class="btn btn-outline-light btn-lg px-4">Logout</a>
+        </div>
+        {% else %}
+        <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+            <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg px-4 gap-3">Register</a>
+            <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg px-4">Login</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-shield-lock display-4 mb-3"></i>
+                <h3 class="card-title">Certificate Management</h3>
+                <p class="card-text">Easily manage and monitor your Kubernetes TLS certificates across multiple clusters.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-bell display-4 mb-3"></i>
+                <h3 class="card-title">Expiration Alerts</h3>
+                <p class="card-text">Get notified before your certificates expire with customizable alert settings.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-arrow-repeat display-4 mb-3"></i>
+                <h3 class="card-title">Auto Renewal</h3>
+                <p class="card-text">Automatically renew certificates using cert-manager and Let's Encrypt.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
