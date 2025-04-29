@@ -1,7 +1,12 @@
 
-![alt text](1-image.png)
+### Previous UI version:
+ ![alt text](1-image.png)
 
 
+***
+
+### Updated UI version:
+  ![alt text](2-image.jpg)
 
 # KubeCertify - Kubernetes TLS Certificate Manager
 
