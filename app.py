@@ -135,7 +135,7 @@ def dashboard():
         tls_secrets = []
         expiring_soon = []
         
-        # Use a single API call to get all secrets across namespaces
+        # Use a single API call to get all secrets across namespaces (TLS)
         all_secrets = k8s_client.list_secret_for_all_namespaces()
         for secret in all_secrets.items:
             if secret.type == 'kubernetes.io/tls':
@@ -369,6 +369,7 @@ def alerts():
 
 @app.route('/delete_alert', methods=['POST'])
 @login_required
+# Check id alert in DB
 def delete_alert():
     alert_id = request.form.get('alert_id')
     alert = Alert.query.get(alert_id)
